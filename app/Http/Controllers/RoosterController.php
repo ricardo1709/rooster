@@ -213,7 +213,7 @@ class RoosterController extends Controller
 			'D255807' => 'AMO3', 
 			'D251062' => 'AMO4', 
 			'D251297' => 'AMO4', 
-			'D241471' => 'AMO4', 
+			'D251471' => 'AMO4', 
 			'D255418' => 'AMO4', 
 			'D251898' => 'AMO4', 
 			'D226671' => 'AMO4', 
