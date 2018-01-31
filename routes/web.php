@@ -12,7 +12,6 @@
 */
 
 Route::get('/', 'RoosterController@my')->middleware('auth');
-Route::get('/student/{user}', 'RoosterController@show')->middleware('auth');
 Route::redirect('/amoclient/ready', '/')->middleware('auth');
 
 Route::get('/login', function(){

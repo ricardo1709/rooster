@@ -61,16 +61,7 @@
 	
 	<div class="container">
 		<div class="main">
-			<h1>Hi {{ $user->name }},</h1>
-			<p>Jouw rooster voor de woensdag van deze week is:</p>
-			<div class="schedule">
-				@foreach($schedule as $row)
-					<div>
-						<span>{{ $row['time'] }}</span>
-						<span>{{ $row['title'] }}</span>
-					</div>
-				@endforeach
-			</div>
+			@yield('main')
 		</div>
 	</div>
 

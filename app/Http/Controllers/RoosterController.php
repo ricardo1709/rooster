@@ -16,71 +16,107 @@ class RoosterController extends Controller
     		return view('nope')->with('user', $user);
     	}
 
+    	setlocale(LC_ALL, 'nl_NL', 'Dutch_Netherlands', 'Dutch');
+    	$wednesday = strtotime('wednesday'); //today, or first wednesday to come
     	$schedule = array();
 
+    	//Keuzedeel
     	if(substr($user->group, 0, 3) == 'GEO')
     	{
     		$schedule[2] = array(
     			'title' => 'GEO',
-    			'time' => '09:00 - 12:15'
+    			'time' => '09:00 - 12:15',
+    			'room' => '329'
     		);
     	}
     	else
     	{
     		$schedule[5] = array(
     			'title' => 'KDDV',
-    			'time' => '10:45 - 12:15'
+    			'time' => '10:45 - 12:15',
+    			'room' => '415'
     		);
     	}
 
+    	//Rekenen
     	if($user->group == 'AMO3' || $user->group == 'AMO4')
     	{
     		$schedule[3] = array(
     			'title' => 'Rekenen',
-    			'time' => '09:30 - 10:30'
+    			'time' => '09:30 - 10:30',
+    			'room' => '317'
     		);
     	}
-    	if($user->group == 'AMO5' || $user->group == 'AMO6')
+    	elseif($user->group == 'AMO5' || $user->group == 'AMO6')
     	{
     		$schedule[10] = array(
     			'title' => 'Rekenen',
-    			'time' => '13:15 - 14:15'
+    			'time' => '13:15 - 14:15',
+    			'room' => '317'
     		);
     	}
-    	if($user->group == 'GEO1' || $user->group == 'GEO2')
+    	elseif($user->group == 'GEO1' || $user->group == 'GEO2')
     	{
     		$schedule[12] = array(
     			'title' => 'Rekenen',
-    			'time' => '14:15 - 15:30'
+    			'time' => '14:15 - 15:30',
+    			'room' => '317'
     		);
     	}
 
-    	if(($user->group == 'GEO1' || $user->group == 'GEO2') && $this->dutch_this_week($user))
+    	//Nederlands
+    	if($this->dutch_this_week($user, $wednesday))
     	{
-    		$schedule[10] = array(
-    			'title' => 'Nederlands',
-    			'time' => '13:15 - 14:15'
-    		);
+	    	if($user->group == 'GEO1' || $user->group == 'GEO2')
+	    	{
+	    		$schedule[10] = array(
+	    			'title' => 'Nederlands',
+	    			'time' => '13:15 - 14:15',
+	    			'room' => '???'
+	    		);
+	    	}
+	    	elseif($user->group == 'AMO3' || $user->group == 'AMO4')
+	    	{
+	    		$schedule[1] = array(
+	    			'title' => 'Nederlands',
+	    			'time' => '08:30 - 09:30',
+	    			'room' => '???'
+	    		);
+	    	}
+	    	elseif($user->group == 'AMO5' || $user->group == 'AMO6')
+	    	{
+	    		$schedule[3] = array(
+	    			'title' => 'Nederlands',
+	    			'time' => '09:30 - 10:30',
+	    			'room' => '???'
+	    		);
+	    	}
+	    }
+
+	    //Sort schedule
+	    ksort($schedule);
+
+	    //Set date_string
+    	if(date('Ymd', $wednesday) == date('Ymd'))
+    	{
+    		$date_string = 'vandaag';
     	}
-    	if(($user->group == 'AMO3' || $user->group == 'AMO4') && $this->dutch_this_week($user))
+    	elseif(date('Ymd', $wednesday) == date('Ymd', time()+86400))
     	{
-    		$schedule[1] = array(
-    			'title' => 'Nederlands',
-    			'time' => '08:30 - 09:30'
-    		);
+    		$date_string = 'morgen';
     	}
-    	if(($user->group == 'AMO5' || $user->group == 'AMO6') && $this->dutch_this_week($user))
+    	else
     	{
-    		$schedule[3] = array(
-    			'title' => 'Nederlands',
-    			'time' => '09:30 - 10:30'
-    		);
+    		$date_string = strftime('%A %e %B', $wednesday);
     	}
 
-    	ksort($schedule);
-    	return view('layout')
+    	//Set first name
+    	$user->name = explode(' ', $user->name)[0];
+
+    	return view('schedule')
     		->with('user', $user)
-    		->with('schedule', $schedule);
+    		->with('schedule', $schedule)
+    		->with('date_string', $date_string);
     }
 
     public function my()
@@ -88,7 +124,7 @@ class RoosterController extends Controller
     	return $this->show(Auth::user());
     }
 
-    private function dutch_this_week(User $user)
+    private function dutch_this_week(User $user, $wednesday)
     {
     	$dates = array(
 			'even' => array(
@@ -120,11 +156,7 @@ class RoosterController extends Controller
 
 		$my_dates = $groups[$user->group];
 		foreach ($my_dates as $date) {
-			if($date == date('Y-m-d'))
-			{
-				return true;
-			}
-			elseif(date('W', strtotime($date)) == date('W'))
+			if($date == $wednesday)
 			{
 				return true;
 			}
@@ -136,7 +168,7 @@ class RoosterController extends Controller
     private function find_group(User $user)
     {
     	$students = array(
-    		//'br10' => 'AMO5',
+    		'br10' => 'AMO5',
 			'D250400' => 'GEO1', 
 			'D252784' => 'GEO1', 
 			'D251061' => 'GEO1', 
