@@ -11,6 +11,8 @@ class RoosterController extends Controller
     public function show(User $user)
     {
     	$user->group = $this->find_group($user);
+    	$user->name = explode(' ', $user->name)[0];
+
     	if($user->group == false)
     	{
     		return view('nope')->with('user', $user);
@@ -109,9 +111,6 @@ class RoosterController extends Controller
     	{
     		$date_string = strftime('%A %e %B', $wednesday);
     	}
-
-    	//Set first name
-    	$user->name = explode(' ', $user->name)[0];
 
     	return view('schedule')
     		->with('user', $user)
