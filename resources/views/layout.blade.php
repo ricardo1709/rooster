@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>Moet ik vandaag naar Nederlands?</title>
+	<title>Rooster woensdagen</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<style type="text/css">
 		
