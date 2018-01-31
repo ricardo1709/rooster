@@ -11,6 +11,11 @@ class RoosterController extends Controller
     public function show(User $user)
     {
     	$user->group = $this->find_group($user);
+    	if($user->group == false)
+    	{
+    		return view('nope')->with('user', $user);
+    	}
+
     	$schedule = array();
 
     	if(substr($user->group, 0, 3) == 'GEO')
@@ -131,7 +136,7 @@ class RoosterController extends Controller
     private function find_group(User $user)
     {
     	$students = array(
-    		'br10' => 'AMO6',
+    		//'br10' => 'AMO5',
 			'D250400' => 'GEO1', 
 			'D252784' => 'GEO1', 
 			'D251061' => 'GEO1', 
@@ -267,6 +272,11 @@ class RoosterController extends Controller
 			'D258205' => 'BEH3'
 		);
 
-		return $students[$user->id];
+    	if(array_key_exists($user->id, $students))
+    	{
+			return $students[$user->id];
+		}
+
+		return false;
     }
 }
